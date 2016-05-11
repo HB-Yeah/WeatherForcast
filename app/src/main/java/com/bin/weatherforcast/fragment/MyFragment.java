@@ -310,7 +310,7 @@ public class MyFragment extends Fragment {
 
         three_hour_weather_content.removeAllViews();
         JSONArray three_hours_forcast = JSONArray.parseArray(s_three_hours_forcast);
-
+//测试
         for (int i = 0; i < 8; i++) {
 //                JSONObject hours_forcast = three_hours_forcast.getJSONObject(i);
 //                String[] temp=hours_forcast.getString("wind_power").split(",");
