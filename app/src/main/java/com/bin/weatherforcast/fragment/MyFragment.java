@@ -23,8 +23,10 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bin.weatherforcast.R;
+import com.bin.weatherforcast.listener.LocalInfoSetListener;
 import com.bin.weatherforcast.receiver.WeatherInfoRefreshDone;
 import com.bin.weatherforcast.service.WeatherInfoRefresh;
+import com.bin.weatherforcast.utils.LocalInfoBeanManager;
 import com.bin.weatherforcast.utils.Weather_contants;
 import com.bin.weatherforcast.utils.LocalInfoBean;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -39,12 +41,15 @@ import java.util.Date;
 public class MyFragment extends Fragment {
     private String area_name;
     private String area_id;
-    public  void setArea_name(String area_name){
-        this.area_name=area_name;
+
+    public void setArea_name(String area_name) {
+        this.area_name = area_name;
     }
-    public void setArea_id(String area_id){
-        this.area_id=area_id;
+
+    public void setArea_id(String area_id) {
+        this.area_id = area_id;
     }
+
     WeatherInfoRefreshDone myReceiver;
     ImageLoader imageLoader = ImageLoader.getInstance();
     Handler handler = new Handler() {
@@ -53,7 +58,7 @@ public class MyFragment extends Fragment {
             switch (msg.what) {
                 case 0:
                     doRefresh();
-                    if(mSwipeLayout.isRefreshing()){
+                    if (mSwipeLayout.isRefreshing()) {
                         mSwipeLayout.setRefreshing(false);
                     }
                     break;
@@ -80,6 +85,7 @@ public class MyFragment extends Fragment {
     Activity context;
     Resources mResources;
     SharedPreferences weatherInfo;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,8 +103,8 @@ public class MyFragment extends Fragment {
         filter.addAction("com.yhb.action.REFRESH_DONE");
         context.registerReceiver(myReceiver, filter);
         long nowTime = System.currentTimeMillis();
-        long refreshTime = weatherInfo.getLong("refreshTime",nowTime);
-        if ((nowTime-refreshTime)>=3600000) {
+        long refreshTime = weatherInfo.getLong("refreshTime", nowTime);
+        if ((nowTime - refreshTime) >= 3600000) {
             //启动intentservice，请求并保存信息
             Intent intent = new Intent(context, WeatherInfoRefresh.class);
             intent.putExtra("areaId", area_id);
@@ -131,10 +137,11 @@ public class MyFragment extends Fragment {
     LinearLayout life_suggestion;
     SwipeRefreshLayout mSwipeLayout;
     SimpleDateFormat myFmt;
+
     private void initView(View content_view) {
 
-        refresh_time=(TextView)content_view.findViewById(R.id.refreshTime);
-        myFmt=new SimpleDateFormat("HH:mm 刷新");
+        refresh_time = (TextView) content_view.findViewById(R.id.refreshTime);
+        myFmt = new SimpleDateFormat("HH:mm 刷新");
         live_weather_icon = (ImageView) content_view.findViewById(R.id.live_weather_icon);
         live_weather_weather = (TextView) content_view.findViewById(R.id.live_weather_weather);
         live_weather_wind_power = (TextView) content_view.findViewById(R.id.live_weather_wind_power);
@@ -173,7 +180,7 @@ public class MyFragment extends Fragment {
         });
 
         life_suggestion = (LinearLayout) content_view.findViewById(R.id.life_suggestion);
-        mSwipeLayout = (SwipeRefreshLayout)content_view.findViewById(R.id.myswipeRefreshLayout);
+        mSwipeLayout = (SwipeRefreshLayout) content_view.findViewById(R.id.myswipeRefreshLayout);
         mSwipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -185,7 +192,8 @@ public class MyFragment extends Fragment {
                 android.R.color.holo_red_light);
 
     }
-    private void callRefreshService(){
+
+    private void callRefreshService() {
         Intent intent = new Intent(context, WeatherInfoRefresh.class);
         intent.putExtra("areaId", area_id);
         intent.putExtra("areaName", area_name);
@@ -193,8 +201,7 @@ public class MyFragment extends Fragment {
     }
 
 
-
-//    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
+    //    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
 //
 //        @Override
 //        protected String[] doInBackground(Void... params) {
@@ -218,150 +225,79 @@ public class MyFragment extends Fragment {
 //            super.onPostExecute(result);
 //        }
 //    }
-    class ReBack extends AsyncTask{
-    @Override
-    protected Object doInBackground(Object[] params) {
-        LocalInfoBean wb = new LocalInfoBean();
 
-        return null;
-    }
+    LocalInfoBeanManager libm;
 
-    @Override
-    protected void onPostExecute(Object o) {
-        super.onPostExecute(o);
-    }
-}
-
-    int doRefresh_count=0;
     private void doRefresh() {
         Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
         refresh_time.setText(myFmt.format(rt));
 
         String s_six_day_weather = weatherInfo.getString("six_day_weather", "");
-        if (s_six_day_weather.length() != 0) {
-            six_day_refresh(s_six_day_weather);
-        }else if (doRefresh_count<3){
-            callRefreshService();
-            doRefresh_count+=1;
-            return;
-        }
-        String date = weatherInfo.getString("date", "-1");
-        //更新当前天气
         String s_now = weatherInfo.getString("now", "");
-        if (s_now.length() != 0) {
-            now_refresh(s_now);
-        }else if (doRefresh_count<3){
-            callRefreshService();
-            doRefresh_count+=1;
-            return;
-        }
-//3hours部分
         String s_three_hours_forcast = weatherInfo.getString("3hourForcast", "");
-
-        if (s_three_hours_forcast.length() != 0) {
-            three_hour_refresh(s_three_hours_forcast);
-        }else if (doRefresh_count<3){
-            callRefreshService();
-            doRefresh_count+=1;
-            return;
-        }
         String s_life_suggestion = weatherInfo.getString("life_suggestion", "");
-        if (s_life_suggestion.length() != 0) {
-            suggestion_refresh(s_life_suggestion);
-        }else if (doRefresh_count<3){
-            callRefreshService();
-            doRefresh_count+=1;
-            return;
-        }
-        doRefresh_count=0;
-    }
-
-    private void now_refresh(String s_now) {
-
-
-        JSONObject now = JSONObject.parseObject(s_now);
-        String weather_pic_url = now.getString("weather_pic");
-        String s_pic_num = weather_pic_url.substring(weather_pic_url.length() - 6, weather_pic_url.length() - 4);
-        int pic_num = Integer.parseInt(s_pic_num);
-//            int night_tax=0;
-        StringBuffer time_status = new StringBuffer();
-        if (weather_pic_url.contains("night")) {
-//                night_tax=50;
-            time_status.append("n");
+        if (s_six_day_weather.length() != 0 || s_now.length() != 0 || s_three_hours_forcast.length() != 0 || s_life_suggestion.length() != 0) {
+            libm = new LocalInfoBeanManager(s_six_day_weather, s_now, s_three_hours_forcast, s_life_suggestion);
+            libm.setListener(new LocalInfoSetListener() {
+                @Override
+                public void afterSetDone() {
+                    LocalInfoBean lib = libm.getBean();
+                    now_refresh(lib);
+                    three_hour_refresh(lib);
+                    six_day_refresh(lib);
+                    suggestion_refresh(lib);
+                }
+            });
         } else {
-//                night_tax=0;
-            time_status.append("d");
+            callRefreshService();
         }
-//            imageLoader.displayImage(weather_pic_url, live_weather_icon);
-//            live_weather_icon.setImageResource(R.drawable.d00+pic_num+night_tax);
-        live_weather_icon.setImageResource(mResources.getIdentifier(time_status.append(s_pic_num).toString(), "drawable", context.getPackageName()));
-        live_weather_weather.setText(now.getString("weather"));
-        live_weather_wind_power.setText(now.getString("wind_power"));
-        live_weather_wind_direction.setText(now.getString("wind_direction"));
-        live_weather_temperature.setText(now.getString("temperature") + "℃");
-        live_weather_humidity.setText("湿度：" + now.getString("sd"));
-        live_weather_air_quality_desc.setText("空气" + now.getJSONObject("aqiDetail").getString("quality"));
-            /*refresh_time.setText("气象更新时间" + now.getString("temperature_time"));*/
+
 
     }
 
-    private void three_hour_refresh(String s_three_hours_forcast) {
+    private void now_refresh(LocalInfoBean lib) {
+        live_weather_icon.setImageResource(mResources.getIdentifier(lib.getLiveIcon(), "drawable", context.getPackageName()));
+        live_weather_weather.setText(lib.getLiveWeather());
+        live_weather_wind_power.setText(lib.getLiveWindPower());
+        live_weather_wind_direction.setText(lib.getLiveWindDirection());
+        live_weather_temperature.setText(lib.getLiveTemperature());
+        live_weather_humidity.setText(lib.getLiveHumidity());
+        live_weather_air_quality_desc.setText(lib.getLiveAirDesc());
 
+    }
 
+    private void three_hour_refresh(LocalInfoBean lib) {
+        //由于此处的数据量不稳定，所以用length来控制view
         three_hour_weather_content.removeAllViews();
-        JSONArray three_hours_forcast = JSONArray.parseArray(s_three_hours_forcast);
-//测试
-        for (int i = 0; i < 8; i++) {
-//                JSONObject hours_forcast = three_hours_forcast.getJSONObject(i);
-//                String[] temp=hours_forcast.getString("wind_power").split(",");
-//                time_wind_power[i].setText(temp[0]);
-//                time_value[i].setText(hours_forcast.getString("hour"));
-//                time_temperature[i].setText(hours_forcast.getString("temperature"));
-//                String hours_pic_url = hours_forcast.getString("weather_pic");
-////                String s_pic_num=hours_pic_url.substring(hours_pic_url.length() - 6, hours_pic_url.length() - 4);
-////                int pic_num=Integer.parseInt(s_pic_num);
-////                time_icon[i].setImageResource(R.drawable.i00+pic_num);
-//                imageLoader.displayImage(hours_pic_url, time_icon[i]);
+        String[] threeHoursIcon = lib.getThreeHoursIcon();
+        String[] threeHoursWindPower = lib.getThreeHoursWindPower();
+        String[] threeHoursValue = lib.getThreeHoursValue();
+        String[] threeHoursTemperature = lib.getThreeHoursTemperature();
+        int length = threeHoursIcon.length;
+        for (int i = 0; i < length; i++) {
             View three_hour_weather_item = inflater.inflate(R.layout.three_hour_weather_item, null);
             TextView time_value = (TextView) three_hour_weather_item.findViewById(R.id.time_value);
             ImageView time_icon = (ImageView) three_hour_weather_item.findViewById(R.id.time_icon);
             TextView time_temperature = (TextView) three_hour_weather_item.findViewById(R.id.time_temperature);
             TextView time_wind_power = (TextView) three_hour_weather_item.findViewById(R.id.time_wind_power);
-            try {
-                JSONObject hours_forcast = three_hours_forcast.getJSONObject(i);
-                String[] temp = hours_forcast.getString("wind_power").split(",");
-                time_wind_power.setText(temp[0]);
-                time_value.setText(hours_forcast.getString("hour"));
-                time_temperature.setText(hours_forcast.getString("temperature") + "℃");
-                String hours_pic_url = hours_forcast.getString("weather_pic");
-                int night_tax = 0;
-                StringBuffer time_status = new StringBuffer();
-                if (hours_pic_url.contains("night")) {
-                    night_tax = 50;
-                    time_status.append("n");
-                } else {
-                    night_tax = 0;
-                    time_status.append("d");
-                }
-                String s_pic_num = hours_pic_url.substring(hours_pic_url.length() - 6, hours_pic_url.length() - 4);
-                int pic_num = Integer.parseInt(s_pic_num);
-//                    time_icon.setImageResource(R.drawable.d00+pic_num+night_tax);
-                time_icon.setImageResource(mResources.getIdentifier(time_status.append(s_pic_num).toString(), "drawable", context.getPackageName()));
-//                    imageLoader.displayImage(hours_pic_url, time_icon);
-                three_hour_weather_content.addView(three_hour_weather_item);
-            } catch (Exception e) {
-
-            }
-
+            time_wind_power.setText(threeHoursWindPower[i]);
+            time_value.setText(threeHoursValue[i]);
+            time_temperature.setText(threeHoursTemperature[i]);
+            time_icon.setImageResource(mResources.getIdentifier(threeHoursIcon[i], "drawable", context.getPackageName()));
+            three_hour_weather_content.addView(three_hour_weather_item);
         }
 
 
     }
 
-    private void six_day_refresh(String s_six_day_weather) {
-
+    private void six_day_refresh(LocalInfoBean lib) {
+        //6个格式相同的段落，直接addview，省下设置id的功夫
         six_day_holder.removeAllViews();
-        JSONObject o_six_day_weather = JSONObject.parseObject(s_six_day_weather);
+        String[] sixDayDayTemperature = lib.getSixDayDayTemperature();
+        String[] sixDayNightTemperature = lib.getSixDayNightTemperature();
+        String[] sixDayWeather = lib.getSixDayWeather();
+        String[] sixDayWindPower = lib.getSixDayWindPower();
+        String[] sixDayWeekday = lib.getSixDayWeekday();
         for (int i = 0; i < 6; i++) {
             View six_day_coming_weather_item = inflater.inflate(R.layout.six_day_coming_weather_item, null);
             TextView six_day_weekday = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_weekday);
@@ -370,16 +306,12 @@ public class MyFragment extends Fragment {
             TextView six_day_weather = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_weather);
             TextView six_day_wind_power = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_wind_power);
 
-            JSONObject six_weather = o_six_day_weather.getJSONObject("f" + String.valueOf(i + 2) + "_weather");
-            if (i == 0) {
-                six_day_weekday.setText("明天");
-            } else {
-                six_day_weekday.setText(Weather_contants.weekday_cn[six_weather.getIntValue("weekday") - 1]);
-            }
-            six_day_day_temperature.setText(six_weather.getString("day_air_temperature") + "℃");
-            six_day_night_temperature.setText(six_weather.getString("night_air_temperature") + "℃");
-            six_day_weather.setText(six_weather.getString("day_weather"));
-            six_day_wind_power.setText(six_weather.getString("wind_power"));
+            six_day_weekday.setText(sixDayWeekday[i]);
+            six_day_day_temperature.setText(sixDayDayTemperature[i]);
+            six_day_night_temperature.setText(sixDayNightTemperature[i]);
+            six_day_weather.setText(sixDayWeather[i]);
+            six_day_wind_power.setText(sixDayWindPower[i]);
+
             six_day_holder.addView(six_day_coming_weather_item);
         }
         for (int i = 0; i < 3; i++)
@@ -388,36 +320,22 @@ public class MyFragment extends Fragment {
 
     }
 
-    private void suggestion_refresh(String s_life_suggestion) {
-
-
+    private void suggestion_refresh(LocalInfoBean lib) {
+        //这里的数据也是不稳定
         life_suggestion.removeAllViews();
-        JSONObject life_suggetions = JSONObject.parseObject(s_life_suggestion);
-//            String[] suggestions = new String[9];
-//            suggestions[0]=life_suggetions.getJSONObject("beauty").getString("desc");
-//            suggestions[1]=life_suggetions.getJSONObject("clothes").getString("desc");
-//            suggestions[2]=life_suggetions.getJSONObject("cl").getString("desc");
-//            suggestions[3]=life_suggetions.getJSONObject("cold").getString("desc");
-//            suggestions[4]=life_suggetions.getJSONObject("dy").getString("desc");
-//            suggestions[5]=life_suggetions.getJSONObject("ac").getString("desc");
-//            suggestions[6]=life_suggetions.getJSONObject("uv").getString("desc");
-//            suggestions[7]=life_suggetions.getJSONObject("wash_car").getString("desc");
-//            suggestions[8]=life_suggetions.getJSONObject("travel").getString("desc");
-
+        String[] suggestionDesc = lib.getSuggestionDesc();
         for (int i = 0; i < 9; i++) {
-            View life_suggestion_item = inflater.inflate(R.layout.life_suggestion_item, null);
-            ImageView life_suggestion_icon = (ImageView) life_suggestion_item.findViewById(R.id.life_suggestion_icon);
-            TextView life_suggestion_title = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_title);
-            TextView life_suggestion_description = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_description);
-            try {
+            if(suggestionDesc[i]!=null){
+                View life_suggestion_item = inflater.inflate(R.layout.life_suggestion_item, null);
+                ImageView life_suggestion_icon = (ImageView) life_suggestion_item.findViewById(R.id.life_suggestion_icon);
+                TextView life_suggestion_title = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_title);
+                TextView life_suggestion_description = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_description);
+
                 life_suggestion_icon.setImageResource(Weather_contants.life_suggestion_icon_id[i]);
                 life_suggestion_title.setText(Weather_contants.life_suggestion_title_string[i]);
-                life_suggestion_description.setText(life_suggetions.getJSONObject(Weather_contants.life_suggestion_description_key[i]).getString("desc"));
+                life_suggestion_description.setText(suggestionDesc[i]);
                 life_suggestion.addView(life_suggestion_item);
-            } catch (Exception e) {
-
             }
-
         }
 
 
