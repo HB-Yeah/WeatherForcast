@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.bin.weatherforcast.activity.Position_manager">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.NoActionBar.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/top_bar_0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:id="@+id/top_bar_back"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#90ffffff"
+                            android:textSize="30sp"
+                            android:paddingBottom="7dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:text="‹"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="位置管理"/>
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/top_bar_edit_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="16sp"
+                        android:background="@drawable/shape_btn_black_gray"
+                        android:onClick="onTop_bar_edit_button_click"
+                        android:text="编辑"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/top_bar_1"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/top_bar_cancel_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#aaaaaa"
+                            android:layout_marginLeft="8dp"
+                            android:textSize="16sp"
+                            android:padding="3dp"
+                            android:layout_centerVertical="true"
+                            android:onClick="onTop_bar_cancel_btn_click"
+                            android:background="@drawable/shape_stroke_gray_solid_white_corner_3dp"
+                            android:text="取消"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="位置管理"/>
+                    <Button
+                        android:id="@+id/top_bar_ensure_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="16sp"
+                        android:background="@drawable/shape_btn_red_whitered"
+                        android:onClick="onTop_bar_ensure_button_click"
+                        android:text="确定"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_position_manager" />
+
+
+</android.support.design.widget.CoordinatorLayout>

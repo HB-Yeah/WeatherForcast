@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="10dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/life_suggestion_icon"
+            style="@style/life_suggestion_icon" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/life_suggestion_title"
+                style="@style/index_text"
+                android:text="[化妆指数]"/>
+            <TextView
+                android:id="@+id/life_suggestion_description"
+                style="@style/suggestion_text"
+                />
+            <LinearLayout  style="@style/white_line"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

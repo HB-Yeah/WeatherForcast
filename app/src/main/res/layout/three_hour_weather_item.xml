@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="15dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/time_value"
+        style="@style/three_hours_text_style" />
+
+    <ImageView
+        android:id="@+id/time_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
+    <TextView
+        android:id="@+id/time_temperature"
+        style="@style/three_hours_text_style" />
+
+    <TextView
+        android:id="@+id/time_wind_power"
+        style="@style/three_hours_text_style" />
+</LinearLayout>
+
+</LinearLayout>
+

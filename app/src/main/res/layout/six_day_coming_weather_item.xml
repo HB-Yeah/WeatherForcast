@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        style="@style/six_day_section">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout style="@style/six_day_linearlayout_0">
+
+                <TextView
+                    android:id="@+id/six_day_weekday"
+                    style="@style/six_day_text_style"
+                    android:text="明天" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/six_day_linearlayout_0"
+                android:layout_alignParentRight="true">
+
+                <TextView
+                    android:id="@+id/six_day_day_temperature"
+                    style="@style/six_day_text_style"
+                    android:text="29℃" />
+
+                <LinearLayout style="@style/white_line_vertival" />
+
+                <TextView
+                    android:id="@+id/six_day_night_temperature"
+                    style="@style/six_day_text_style"
+                    android:text="22℃" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/six_day_weather"
+                style="@style/six_day_text_style"
+                android:text="大雨" />
+
+            <TextView
+                android:id="@+id/six_day_wind_power"
+                style="@style/six_day_text_style"
+                android:layout_alignParentRight="true"
+                android:text="微风" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout style="@style/white_line" />
+</LinearLayout>
