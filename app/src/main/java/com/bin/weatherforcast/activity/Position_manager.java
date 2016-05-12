@@ -110,8 +110,6 @@ public class Position_manager extends BaseActivity {
             position_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String areaName=((TextView)(view.findViewById(R.id.position_list_item_area_name))).getText().toString();
-//                String areaId=((TextView)(view.findViewById(R.id.position_list_item_area_id))).getText().toString();
                     Intent intent = new Intent();
                     intent.putExtra("position", position);
                     setResult(0, intent);
@@ -125,38 +123,13 @@ public class Position_manager extends BaseActivity {
 
     public void onPosition_list_item_remove_icon_click(View v) {
         LinearLayout view = (LinearLayout) v.getParent();
-//        TextView position_list_item_area_name = (TextView) view.findViewById(R.id.position_list_item_area_name_1);
-//        TextView position_list_item_area_id = (TextView) view.findViewById(R.id.position_list_item_area_id_1);
-//        JSONObject jo= new JSONObject();
-//        jo.put("area_name",position_list_item_area_name.getText().toString());
-//        jo.put("area_id", position_list_item_area_id.getText().toString());
-//        repository.add(jo);
         int postion = position_list_1.getPositionForView(view);
         position_list_data_1.remove(postion);
         SimpleAdapter position_list_adapter = new SimpleAdapter(this, position_list_data_1, R.layout.position_list_item_remove_icon_visible
                 , new String[]{"position_list_item_area_name", "position_list_item_area_id",}
                 , new int[]{R.id.position_list_item_area_name_1, R.id.position_list_item_area_id_1});
         position_list_1.setAdapter(position_list_adapter);
-        //关于arraylist remove（position）思考
     }
-//    private void hide_position_list_item_remove_icon(){
-//        int position_list_item_count = position_list.getCount();
-//        View[] remove_icon = new View[position_list_item_count];
-//        for (int i = 0; i < position_list_item_count; i++) {
-//            View view = position_list.getChildAt(i);
-//            remove_icon[i] = view.findViewById(R.id.position_list_item_remove_icon);
-//            remove_icon[i].setVisibility(View.GONE);
-//        }
-//    }
-//    private void show_position_list_item_remove_icon(){
-//        int position_list_item_count = position_list.getCount();
-//        View[] remove_icon = new View[position_list_item_count];
-//        for (int i = 0; i < position_list_item_count; i++) {
-//            View view = position_list.getChildAt(i);
-//            remove_icon[i] = view.findViewById(R.id.position_list_item_remove_icon);
-//            remove_icon[i].setVisibility(View.VISIBLE);
-//        }
-//    }为什么会nullpointer呢，有空思考
 
     public void onTop_bar_edit_button_click(View v) {
         top_bar_0.setVisibility(View.GONE);
@@ -202,8 +175,6 @@ public class Position_manager extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10 && resultCode == 10) {
-//            String list_item_area_name = data.getStringExtra("list_item_area_name");
-//            String list_item_area_id=data.getStringExtra("list_item_area_id");
             this.finish();
         }
         super.onActivityResult(requestCode, resultCode, data);

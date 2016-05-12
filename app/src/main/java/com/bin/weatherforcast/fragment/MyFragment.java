@@ -13,12 +13,14 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -51,7 +53,6 @@ public class MyFragment extends Fragment {
     }
 
     WeatherInfoRefreshDone myReceiver;
-    ImageLoader imageLoader = ImageLoader.getInstance();
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -62,23 +63,10 @@ public class MyFragment extends Fragment {
                         mSwipeLayout.setRefreshing(false);
                     }
                     break;
-                case 1:
-                    doRefresh();
-                    break;
             }
 
         }
     };
-
-//    public static MyFragment newInstance(String area_name, String area_id) {
-//
-//        Bundle args = new Bundle();
-//        args.putString("area_name", area_name);
-//        args.putString("area_id", area_id);
-//        MyFragment fragment = new MyFragment();
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
 
     LayoutInflater inflater;
@@ -95,13 +83,12 @@ public class MyFragment extends Fragment {
         View content_view = inflater.inflate(R.layout.fragment_layout, container, false);
         weatherInfo = context.getSharedPreferences(area_name + "_weather", Context.MODE_PRIVATE);
         initView(content_view);
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-        handler.sendEmptyMessage(1);
         //注册接收器，接受来自service的更新结果，或是成功或是失败，再执行相应的动作
         myReceiver = new WeatherInfoRefreshDone(handler);
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.yhb.action.REFRESH_DONE");
         context.registerReceiver(myReceiver, filter);
+        doRefresh();
         long nowTime = System.currentTimeMillis();
         long refreshTime = weatherInfo.getLong("refreshTime", nowTime);
         if ((nowTime - refreshTime) >= 3600000) {
@@ -200,63 +187,43 @@ public class MyFragment extends Fragment {
         context.startService(intent);
     }
 
-
-    //    private class GetDataTask extends AsyncTask<Void, Void, String[]> {
-//
-//        @Override
-//        protected String[] doInBackground(Void... params) {
-//            // Simulates a background job.
-//            try {
-//                Intent intent = new Intent(context, WeatherInfoRefresh.class);
-//                intent.putExtra("areaId", area_id);
-//                intent.putExtra("areaName", area_name);
-//                context.startService(intent);
-//            } catch (Exception e) {
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String[] result) {
-//            // Do some stuff here
-//
-//            // Call onRefreshComplete when the list has been refreshed.
-//
-//            super.onPostExecute(result);
-//        }
-//    }
-
     LocalInfoBeanManager libm;
-
+    LocalInfoBean lib;
     private void doRefresh() {
-        Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
-        refresh_time.setText(myFmt.format(rt));
+        if(isLocalDataExist()){
+            Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
+            refresh_time.setText(myFmt.format(rt));
 
-        String s_six_day_weather = weatherInfo.getString("six_day_weather", "");
-        String s_now = weatherInfo.getString("now", "");
-        String s_three_hours_forcast = weatherInfo.getString("3hourForcast", "");
-        String s_life_suggestion = weatherInfo.getString("life_suggestion", "");
-        if (s_six_day_weather.length() != 0 || s_now.length() != 0 || s_three_hours_forcast.length() != 0 || s_life_suggestion.length() != 0) {
-            libm = new LocalInfoBeanManager(s_six_day_weather, s_now, s_three_hours_forcast, s_life_suggestion);
-            libm.setListener(new LocalInfoSetListener() {
-                @Override
-                public void afterSetDone() {
-                    LocalInfoBean lib = libm.getBean();
-                    now_refresh(lib);
-                    three_hour_refresh(lib);
-                    six_day_refresh(lib);
-                    suggestion_refresh(lib);
-                }
-            });
-        } else {
-            callRefreshService();
+            String s_six_day_weather = weatherInfo.getString("six_day_weather", "");
+            String s_now = weatherInfo.getString("now", "");
+            String s_three_hours_forcast = weatherInfo.getString("3hourForcast", "");
+            String s_life_suggestion = weatherInfo.getString("life_suggestion", "");
+            if (!s_six_day_weather.equals("") && !s_now.equals("")&& !s_three_hours_forcast.equals("") && !s_life_suggestion.equals("")) {
+                libm = new LocalInfoBeanManager(s_six_day_weather, s_now, s_three_hours_forcast, s_life_suggestion);
+                libm.setListener(new LocalInfoSetListener() {
+                    @Override
+                    public void afterSetDone() {
+                        lib = libm.getBean();
+                        now_refresh(lib);
+                        three_hour_refresh(lib);
+                        six_day_refresh(lib);
+                        suggestion_refresh(lib);
+                    }
+                });
+            } else {
+                callRefreshService();
+            }
+
+
+        }else {
+            Toast.makeText(context,"更新失败了~",Toast.LENGTH_SHORT);
         }
-
-
     }
 
     private void now_refresh(LocalInfoBean lib) {
-        live_weather_icon.setImageResource(mResources.getIdentifier(lib.getLiveIcon(), "drawable", context.getPackageName()));
+        String iconString=lib.getLiveIcon();
+        int id=mResources.getIdentifier(iconString, "drawable", context.getPackageName());
+        live_weather_icon.setImageResource(id);
         live_weather_weather.setText(lib.getLiveWeather());
         live_weather_wind_power.setText(lib.getLiveWindPower());
         live_weather_wind_direction.setText(lib.getLiveWindDirection());
@@ -340,7 +307,13 @@ public class MyFragment extends Fragment {
 
 
     }
-
+    private boolean isLocalDataExist(){
+        long refreshTime = weatherInfo.getLong("refreshTime", -1);
+        if (refreshTime==-1)
+            return false;
+        else
+            return true;
+    }
     @Override
     public void onDestroy() {
         context.unregisterReceiver(myReceiver);

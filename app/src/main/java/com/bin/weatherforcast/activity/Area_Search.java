@@ -50,6 +50,7 @@ public class Area_Search extends BaseActivity {
     ListView search_view_tips_list;
     LinearLayout search_view_hot;
     GridView search_view_hot_grid;
+    LinearLayout net_error;
 
     private void initView() {
         search_view_top_bar_back_btn = (TextView) findViewById(R.id.search_view_top_bar_back_btn);
@@ -57,12 +58,13 @@ public class Area_Search extends BaseActivity {
         search_view_hot = (LinearLayout) findViewById(R.id.search_view_hot);
         search_view_tips_list = (ListView) findViewById(R.id.search_view_tips_list);
         search_view_hot_grid = (GridView) findViewById(R.id.search_view_hot_grid);
+        net_error=(LinearLayout)findViewById(R.id.net_error);
 
         String[] hot_area_name = {"北京", "上海", "广州", "深圳", "珠海", "佛山", "南京", "苏州", "杭州", "济南", "青岛", "郑州", "石家庄", "福州", "厦门"
                 , "武汉", "长沙", "成都", "重庆", "太原", "沈阳", "南宁", "西安", "天津"};
         ArrayAdapter<String> grid_adapter = new ArrayAdapter<String>(this, R.layout.hot_grid_item, R.id.hot_grid_string, hot_area_name);
         search_view_hot_grid.setAdapter(grid_adapter);
-        search_view_input_edit.addTextChangedListener(new myTextWatcher(this, search_view_tips_list, search_view_hot));
+        search_view_input_edit.addTextChangedListener(new myTextWatcher(this, search_view_tips_list, search_view_hot,net_error));
         search_view_tips_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
