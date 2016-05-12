@@ -188,7 +188,6 @@ public class MyFragment extends Fragment {
     }
 
     LocalInfoBeanManager libm;
-    LocalInfoBean lib;
     private void doRefresh() {
         if(isLocalDataExist()){
             Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
@@ -202,8 +201,7 @@ public class MyFragment extends Fragment {
                 libm = new LocalInfoBeanManager(s_six_day_weather, s_now, s_three_hours_forcast, s_life_suggestion);
                 libm.setListener(new LocalInfoSetListener() {
                     @Override
-                    public void afterSetDone() {
-                        lib = libm.getBean();
+                    public void afterSetDone(LocalInfoBean lib) {
                         now_refresh(lib);
                         three_hour_refresh(lib);
                         six_day_refresh(lib);

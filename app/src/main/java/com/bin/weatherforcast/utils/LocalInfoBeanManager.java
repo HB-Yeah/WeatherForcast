@@ -32,9 +32,6 @@ public class LocalInfoBeanManager {
         new setInfoTask().execute();
     }
 
-    public LocalInfoBean getBean() {
-        return bean;
-    }
 
 
     class setInfoTask extends AsyncTask {
@@ -52,7 +49,7 @@ public class LocalInfoBeanManager {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             if (listener != null)
-                listener.afterSetDone();
+                listener.afterSetDone(bean);
 
         }
     }

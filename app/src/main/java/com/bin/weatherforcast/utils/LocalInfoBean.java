@@ -1,9 +1,13 @@
 package com.bin.weatherforcast.utils;
 
+import java.io.Serializable;
+
 /**
  * Created by Stranger on 2016/5/11.
  */
-public class LocalInfoBean {
+public class LocalInfoBean implements Serializable{
+    private long refreshTime;
+
     private String liveIcon;
     private String liveWeather;
     private String liveWindPower;
@@ -25,6 +29,14 @@ public class LocalInfoBean {
 
     private String[] suggestionDesc;
 
+    public long getRefreshTime() {
+        return refreshTime;
+    }
+
+    public void setRefreshTime(long refreshTime) {
+        this.refreshTime = refreshTime;
+    }
+
     public String[] getSuggestionDesc() {
         return suggestionDesc;
     }
@@ -32,7 +44,6 @@ public class LocalInfoBean {
     public void setSuggestionDesc(String[] suggestionDesc) {
         this.suggestionDesc = suggestionDesc;
     }
-
 
 
     public String[] getSixDayWeekday() {
