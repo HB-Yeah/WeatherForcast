@@ -1,19 +1,18 @@
 package com.bin.weatherforcast.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +20,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bin.weatherforcast.R;
 import com.bin.weatherforcast.listener.LocalInfoSetListener;
-import com.bin.weatherforcast.receiver.WeatherInfoRefreshDone;
 import com.bin.weatherforcast.service.WeatherInfoRefresh;
 import com.bin.weatherforcast.utils.LocalInfoBeanManager;
+import com.bin.weatherforcast.utils.NetInfoBean;
 import com.bin.weatherforcast.utils.Weather_contants;
 import com.bin.weatherforcast.utils.LocalInfoBean;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,13 +46,12 @@ public class MyFragment extends Fragment {
         this.area_id = area_id;
     }
 
-    WeatherInfoRefreshDone myReceiver;
+    BroadcastReceiver myReceiver;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    doRefresh();
                     if (mSwipeLayout.isRefreshing()) {
                         mSwipeLayout.setRefreshing(false);
                     }
@@ -84,20 +77,27 @@ public class MyFragment extends Fragment {
         weatherInfo = context.getSharedPreferences(area_name + "_weather", Context.MODE_PRIVATE);
         initView(content_view);
         //注册接收器，接受来自service的更新结果，或是成功或是失败，再执行相应的动作
-        myReceiver = new WeatherInfoRefreshDone(handler);
+        myReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean isDone = intent.getBooleanExtra("isDone", false);
+                if (isDone){
+                    NetInfoBean nib=intent.getParcelableExtra(area_id);
+                    doRefresh(nib);
+                    handler.sendEmptyMessage(0);
+                }
+                else
+                {
+                    Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        };
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.yhb.action.REFRESH_DONE_"+area_id);
         context.registerReceiver(myReceiver, filter);
-        doRefresh();
-        long nowTime = System.currentTimeMillis();
-        long refreshTime = weatherInfo.getLong("refreshTime", nowTime);
-        if ((nowTime - refreshTime) >= 3600000) {
-            //启动intentservice，请求并保存信息
-            Intent intent = new Intent(context, WeatherInfoRefresh.class);
-            intent.putExtra("areaId", area_id);
-            intent.putExtra("areaName", area_name);
-            context.startService(intent);
-        }
+        doLocalRefresh();
+
 
 
         return content_view;
@@ -186,9 +186,17 @@ public class MyFragment extends Fragment {
         intent.putExtra("areaName", area_name);
         context.startService(intent);
     }
-
+    private  void doRefresh(LocalInfoBean lib){
+        Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
+        refresh_time.setText(myFmt.format(rt));
+        now_refresh(lib);
+        three_hour_refresh(lib);
+        six_day_refresh(lib);
+        suggestion_refresh(lib);
+    }
     LocalInfoBeanManager libm;
-    private void doRefresh() {
+    private void doLocalRefresh() {
+
         if(isLocalDataExist()){
             Date rt = new Date(weatherInfo.getLong("refreshTime", System.currentTimeMillis()));
             refresh_time.setText(myFmt.format(rt));
@@ -202,12 +210,15 @@ public class MyFragment extends Fragment {
                 libm.setListener(new LocalInfoSetListener() {
                     @Override
                     public void afterSetDone(LocalInfoBean lib) {
-                        now_refresh(lib);
-                        three_hour_refresh(lib);
-                        six_day_refresh(lib);
-                        suggestion_refresh(lib);
+                        doRefresh(lib);
                     }
                 });
+                long nowTime = System.currentTimeMillis();
+                long refreshTime = weatherInfo.getLong("refreshTime", 0);
+                if ((nowTime - refreshTime) >= 3600000) {
+                    //启动intentservice，请求并保存信息
+                    callRefreshService();
+                }
             } else {
                 callRefreshService();
             }

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Stranger on 2016/5/11.
  */
-public class LocalInfoBean implements Serializable{
+public class LocalInfoBean {
     private long refreshTime;
 
     private String liveIcon;

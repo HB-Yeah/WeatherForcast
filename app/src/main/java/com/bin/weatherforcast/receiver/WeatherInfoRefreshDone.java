@@ -18,12 +18,12 @@ public class WeatherInfoRefreshDone extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
             boolean isDone = intent.getBooleanExtra("isDone", false);
             if (isDone){
-                handler.sendEmptyMessageDelayed(0,500);
+                handler.sendEmptyMessage(0);
             }
             else
             {
                 Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
-                handler.sendEmptyMessage(0);
+
             }
 
         /*com.yhb.action.AREASEARCH_DONE*/
