@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        style="@style/six_day_section">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/six_day_section">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -14,7 +16,7 @@
                 <TextView
                     android:id="@+id/six_day_weekday"
                     style="@style/six_day_text_style"
-                    android:text="明天" />
+                    android:text="" />
             </LinearLayout>
 
             <LinearLayout
@@ -24,14 +26,17 @@
                 <TextView
                     android:id="@+id/six_day_day_temperature"
                     style="@style/six_day_text_style"
-                    android:text="29℃" />
+                    android:text="" />
 
-                <LinearLayout style="@style/white_line_vertival" />
+                <LinearLayout
+                    android:id="@+id/white_line_vertival"
+                    android:orientation="vertical"
+                    style="@style/white_line_vertival" />
 
                 <TextView
                     android:id="@+id/six_day_night_temperature"
                     style="@style/six_day_text_style"
-                    android:text="22℃" />
+                    android:text="" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -42,13 +47,13 @@
             <TextView
                 android:id="@+id/six_day_weather"
                 style="@style/six_day_text_style"
-                android:text="大雨" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/six_day_wind_power"
                 style="@style/six_day_text_style"
                 android:layout_alignParentRight="true"
-                android:text="微风" />
+                android:text="" />
         </RelativeLayout>
     </LinearLayout>
 

@@ -86,7 +86,7 @@ public class MyFragment extends Fragment {
         //注册接收器，接受来自service的更新结果，或是成功或是失败，再执行相应的动作
         myReceiver = new WeatherInfoRefreshDone(handler);
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.yhb.action.REFRESH_DONE");
+        filter.addAction("com.yhb.action.REFRESH_DONE_"+area_id);
         context.registerReceiver(myReceiver, filter);
         doRefresh();
         long nowTime = System.currentTimeMillis();
@@ -233,14 +233,14 @@ public class MyFragment extends Fragment {
 
     private void three_hour_refresh(LocalInfoBean lib) {
         //由于此处的数据量不稳定，所以用length来控制view
-        three_hour_weather_content.removeAllViews();
         String[] threeHoursIcon = lib.getThreeHoursIcon();
         String[] threeHoursWindPower = lib.getThreeHoursWindPower();
         String[] threeHoursValue = lib.getThreeHoursValue();
         String[] threeHoursTemperature = lib.getThreeHoursTemperature();
         int length = threeHoursIcon.length;
         for (int i = 0; i < length; i++) {
-            View three_hour_weather_item = inflater.inflate(R.layout.three_hour_weather_item, null);
+            View three_hour_weather_item = three_hour_weather_content.getChildAt(i);
+            three_hour_weather_item.setVisibility(View.VISIBLE);
             TextView time_value = (TextView) three_hour_weather_item.findViewById(R.id.time_value);
             ImageView time_icon = (ImageView) three_hour_weather_item.findViewById(R.id.time_icon);
             TextView time_temperature = (TextView) three_hour_weather_item.findViewById(R.id.time_temperature);
@@ -249,22 +249,20 @@ public class MyFragment extends Fragment {
             time_value.setText(threeHoursValue[i]);
             time_temperature.setText(threeHoursTemperature[i]);
             time_icon.setImageResource(mResources.getIdentifier(threeHoursIcon[i], "drawable", context.getPackageName()));
-            three_hour_weather_content.addView(three_hour_weather_item);
         }
 
 
     }
 
     private void six_day_refresh(LocalInfoBean lib) {
-        //6个格式相同的段落，直接addview，省下设置id的功夫
-        six_day_holder.removeAllViews();
         String[] sixDayDayTemperature = lib.getSixDayDayTemperature();
         String[] sixDayNightTemperature = lib.getSixDayNightTemperature();
         String[] sixDayWeather = lib.getSixDayWeather();
         String[] sixDayWindPower = lib.getSixDayWindPower();
         String[] sixDayWeekday = lib.getSixDayWeekday();
         for (int i = 0; i < 6; i++) {
-            View six_day_coming_weather_item = inflater.inflate(R.layout.six_day_coming_weather_item, null);
+            View six_day_coming_weather_item = six_day_holder.getChildAt(i);
+            six_day_coming_weather_item.setVisibility(View.VISIBLE);
             TextView six_day_weekday = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_weekday);
             TextView six_day_day_temperature = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_day_temperature);
             TextView six_day_night_temperature = (TextView) six_day_coming_weather_item.findViewById(R.id.six_day_night_temperature);
@@ -276,8 +274,6 @@ public class MyFragment extends Fragment {
             six_day_night_temperature.setText(sixDayNightTemperature[i]);
             six_day_weather.setText(sixDayWeather[i]);
             six_day_wind_power.setText(sixDayWindPower[i]);
-
-            six_day_holder.addView(six_day_coming_weather_item);
         }
         for (int i = 0; i < 3; i++)
             six_day_holder.getChildAt(5 - i).setVisibility(View.GONE);
@@ -287,11 +283,10 @@ public class MyFragment extends Fragment {
 
     private void suggestion_refresh(LocalInfoBean lib) {
         //这里的数据也是不稳定
-        life_suggestion.removeAllViews();
         String[] suggestionDesc = lib.getSuggestionDesc();
         for (int i = 0; i < 9; i++) {
+            View life_suggestion_item = life_suggestion.getChildAt(i);
             if(suggestionDesc[i]!=null){
-                View life_suggestion_item = inflater.inflate(R.layout.life_suggestion_item, null);
                 ImageView life_suggestion_icon = (ImageView) life_suggestion_item.findViewById(R.id.life_suggestion_icon);
                 TextView life_suggestion_title = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_title);
                 TextView life_suggestion_description = (TextView) life_suggestion_item.findViewById(R.id.life_suggestion_description);
@@ -299,7 +294,9 @@ public class MyFragment extends Fragment {
                 life_suggestion_icon.setImageResource(Weather_contants.life_suggestion_icon_id[i]);
                 life_suggestion_title.setText(Weather_contants.life_suggestion_title_string[i]);
                 life_suggestion_description.setText(suggestionDesc[i]);
-                life_suggestion.addView(life_suggestion_item);
+                life_suggestion_item.setVisibility(View.VISIBLE);
+            }else{
+                life_suggestion_item.setVisibility(View.GONE);
             }
         }
 

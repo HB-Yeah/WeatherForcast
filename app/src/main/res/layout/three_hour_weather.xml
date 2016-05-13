@@ -10,10 +10,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp">
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp">
 
-
+        <include layout="@layout/three_hour_weather_item" />
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
+        <include layout="@layout/three_hour_weather_item"/>
 
     </LinearLayout>
 </HorizontalScrollView>

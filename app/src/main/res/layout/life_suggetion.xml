@@ -5,5 +5,13 @@
     android:layout_marginTop="15dp"
     android:id="@+id/life_suggestion"
     android:layout_marginBottom="15dp">
-
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
+    <include layout="@layout/life_suggestion_item"/>
 </LinearLayout>

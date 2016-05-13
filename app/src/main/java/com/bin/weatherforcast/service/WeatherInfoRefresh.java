@@ -46,7 +46,7 @@ public class WeatherInfoRefresh extends IntentService {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable e) {
                 //做一些异常处理
                 Intent intent = new Intent();
-                intent.setAction("com.yhb.action.REFRESH_DONE");
+                intent.setAction("com.yhb.action.REFRESH_DONE_"+areaId);
                 intent.putExtra("isDone", false);
                 sendBroadcast(intent);
 
@@ -110,7 +110,7 @@ public class WeatherInfoRefresh extends IntentService {
                     editor.commit();
                     //处理完毕，通知Receiver
                     Intent intent = new Intent();
-                    intent.setAction("com.yhb.action.REFRESH_DONE");
+                    intent.setAction("com.yhb.action.REFRESH_DONE_"+areaId);
                     intent.putExtra("isDone", true);
                     sendBroadcast(intent);
                     Log.e("","请求完成");

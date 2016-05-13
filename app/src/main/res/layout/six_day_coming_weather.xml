@@ -14,7 +14,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
+        <include layout="@layout/six_day_coming_weather_item" />
+        <include layout="@layout/six_day_coming_weather_item"/>
+        <include layout="@layout/six_day_coming_weather_item"/>
+        <include layout="@layout/six_day_coming_weather_item"/>
+        <include layout="@layout/six_day_coming_weather_item"/>
+        <include layout="@layout/six_day_coming_weather_item"/>
 
 
     </LinearLayout>
@@ -29,15 +34,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:text="查看未来几天"
             android:textColor="#ffffff"
-            android:text="查看未来几天" />
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="#ffffff"
-            android:text="﹀" />
+            android:text="﹀"
+            android:textColor="#ffffff" />
     </LinearLayout>
 </LinearLayout>
