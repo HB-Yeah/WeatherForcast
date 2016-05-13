@@ -85,9 +85,11 @@ public class MyFragment extends Fragment {
                     NetInfoBean nib=intent.getParcelableExtra(area_id);
                     doRefresh(nib);
                     handler.sendEmptyMessage(0);
+                    Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
+                    handler.sendEmptyMessage(0);
                     Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
 
                 }
@@ -225,7 +227,7 @@ public class MyFragment extends Fragment {
 
 
         }else {
-            Toast.makeText(context,"更新失败了~",Toast.LENGTH_SHORT);
+            callRefreshService();
         }
     }
 
@@ -271,6 +273,26 @@ public class MyFragment extends Fragment {
         String[] sixDayWeather = lib.getSixDayWeather();
         String[] sixDayWindPower = lib.getSixDayWindPower();
         String[] sixDayWeekday = lib.getSixDayWeekday();
+        if (sixDayDayTemperature==null){
+            Toast.makeText(context,"sixDayDayTemperature==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (sixDayNightTemperature==null){
+            Toast.makeText(context,"sixDayNightTemperature==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (sixDayWeather==null){
+            Toast.makeText(context,"sixDayWeather==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (sixDayWindPower==null){
+            Toast.makeText(context,"sixDayWindPower==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (sixDayWeekday==null){
+            Toast.makeText(context,"sixDayWeekday==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
         for (int i = 0; i < 6; i++) {
             View six_day_coming_weather_item = six_day_holder.getChildAt(i);
             six_day_coming_weather_item.setVisibility(View.VISIBLE);
@@ -295,6 +317,10 @@ public class MyFragment extends Fragment {
     private void suggestion_refresh(LocalInfoBean lib) {
         //这里的数据也是不稳定
         String[] suggestionDesc = lib.getSuggestionDesc();
+        if (suggestionDesc==null){
+            Toast.makeText(context,"suggestionDesc==null",Toast.LENGTH_SHORT).show();
+            return;
+        }
         for (int i = 0; i < 9; i++) {
             View life_suggestion_item = life_suggestion.getChildAt(i);
             if(suggestionDesc[i]!=null){
