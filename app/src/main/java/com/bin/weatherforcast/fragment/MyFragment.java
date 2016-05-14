@@ -52,6 +52,13 @@ public class MyFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
+                    Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
+                    if (mSwipeLayout.isRefreshing()) {
+                        mSwipeLayout.setRefreshing(false);
+                    }
+                    break;
+                case 1:
+                    Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                     if (mSwipeLayout.isRefreshing()) {
                         mSwipeLayout.setRefreshing(false);
                     }
@@ -84,13 +91,11 @@ public class MyFragment extends Fragment {
                 if (isDone){
                     NetInfoBean nib=intent.getParcelableExtra(area_id);
                     doRefresh(nib);
-                    handler.sendEmptyMessage(0);
-                    Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
+                    handler.sendEmptyMessage(1);
                 }
                 else
                 {
                     handler.sendEmptyMessage(0);
-                    Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
 
                 }
             }
